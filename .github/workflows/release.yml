@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: macos-15
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run tests
+        env:
+          CLIPOCR_TEST_ROOT: ${{ runner.temp }}/clipocr-tests
+        run: swift test
+      - name: Build universal release assets
+        env:
+          CLIPOCR_WORK_DIR: ${{ runner.temp }}/clipocr-packaging
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: bash scripts/package-dmg.sh "$RELEASE_TAG"
+      - name: Upload release assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-assets
+          path: |
+            dist/*.dmg
+            dist/*.zip
+            dist/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-assets
+          path: dist
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$RELEASE_TAG" dist/*.dmg dist/*.zip dist/SHA256SUMS.txt \
+            --verify-tag --title "ClipOCR $RELEASE_TAG" --notes-file CHANGELOG.md

@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-build:
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Toolchain
+        run: swift --version
+      - name: Tests
+        env:
+          CLIPOCR_TEST_ROOT: ${{ runner.temp }}/clipocr-tests
+        run: swift test
+      - name: Validate scripts
+        run: bash -n scripts/*.sh
+      - name: Universal build
+        run: bash scripts/build.sh
+      - name: Validate release bundle
+        run: |
+          lipo dist/ClipOCR.app/Contents/MacOS/ClipOCR -verify_arch arm64 x86_64
+          codesign --verify --strict dist/ClipOCR.app
+          plutil -lint dist/ClipOCR.app/Contents/Info.plist
+          test -s dist/ClipOCR.app/Contents/Resources/ClipOCR.icns

@@ -1,0 +1,45 @@
+ClipOCR — screenshot text, straight to your clipboard
+====================================================
+
+COMPATIBILITY
+macOS 13 Ventura or later. Universal app: Apple Silicon and Intel.
+No Apple Intelligence, account, subscription, or internet required.
+
+INSTALL
+1. Drag ClipOCR.app onto the Applications shortcut.
+2. Open ClipOCR from Applications. Look for its icon in the menu bar.
+3. Press Command–Shift–6, then drag a box around text.
+4. A checkmark and a quiet sound mean the text is copied. Paste with Command–V.
+
+FIRST OPEN / GATEKEEPER
+This open-source release is ad-hoc signed, NOT Apple-notarized.
+On macOS 13/14, control-click ClipOCR.app and choose Open if prompted.
+On newer macOS, attempt to open it, then go to:
+System Settings → Privacy & Security → Open Anyway.
+Only bypass the warning for the app you downloaded from the official release:
+https://github.com/otron-io/clipocr/releases
+You do not need to disable Gatekeeper globally.
+
+SCREEN RECORDING PERMISSION
+Allow ClipOCR in System Settings → Privacy & Security →
+Screen & System Audio Recording (Screen Recording on older macOS).
+Quit and reopen ClipOCR if macOS requests it, then try the shortcut again.
+Accessibility permission is not required.
+
+SHORTCUT CONFLICTS
+Some Macs use Command–Shift–6 to capture the Touch Bar.
+If needed, disable that shortcut in System Settings → Keyboard →
+Keyboard Shortcuts → Screenshots, then relaunch ClipOCR.
+Capture Text is also available from the menu-bar menu.
+
+PRIVACY
+Recognition uses Apple Vision locally. Nothing is uploaded.
+Temporary captures are deleted after processing. Text goes to your normal
+macOS clipboard; existing clipboard-manager/Universal Clipboard settings apply.
+
+Escape cancels without changing the clipboard.
+Launch at Login is optional in the menu.
+OCR can make mistakes; inspect important text before relying on it.
+
+Docs, source, and issues: https://github.com/otron-io/clipocr
+MIT License · Copyright (c) 2026 Otron.io
